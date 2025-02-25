@@ -7,7 +7,7 @@ require('dotenv').config();
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const parser = new Parser();
 
-const NEWS_CHANNEL_ID = '301078163654574081'; // Replace with your Discord channel ID
+const NEWS_CHANNEL_ID = '1337091214519832698'; // Replace with your Discord channel ID
 
 // Example RSS Feeds (Replace with your target sources)
 const NEWS_SOURCES = [
