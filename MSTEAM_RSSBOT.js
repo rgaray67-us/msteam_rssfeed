@@ -28,10 +28,12 @@ const NEWS_SOURCES = [
 let lastPostedArticle = {};
 if (fs.existsSync(LAST_POSTED_FILE)) {
     try {
-        lastPostedArticle = JSON.parse(fs.readFileSync(LAST_POSTED_FILE, 'utf8'));
+        const data = fs.readFileSync(LAST_POSTED_FILE, 'utf8');
+        lastPostedArticle = JSON.parse(data);
     } catch (error) {
         console.error("Error reading last posted file:", error);
         lastPostedArticle = {}; // Reset if file is corrupt
+        fs.writeFileSync(LAST_POSTED_FILE, JSON.stringify(lastPostedArticle, null, 2));
     }
 }
 
