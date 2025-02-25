@@ -20,7 +20,8 @@ const LAST_POSTED_FILE = 'lastPosted.json'
 
 // Example RSS Feeds (Replace with your target sources)
 const NEWS_SOURCES = [
-    { name: "Reuters US", url: "https://rss.app/feeds/RNwqhTijydUYMOZB.xml" }
+    { name: "Reuters US", url: "https://rss.app/feeds/RNwqhTijydUYMOZB.xml" },
+    { name: "BBC Top Stories US", url: "http://feeds.bbci.co.uk/news/rss.xml?edition=us" }
 ];
 
 // Load last posted articles from file (Persistent tracking)
