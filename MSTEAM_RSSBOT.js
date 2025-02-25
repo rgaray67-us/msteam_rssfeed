@@ -2,12 +2,14 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const axios = require('axios');
 const Parser = require('rss-parser');
 const cron = require('node-cron');
+const fs = require('fs'); //Required for file operations
 require('dotenv').config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 const parser = new Parser();
 
 const NEWS_CHANNEL_ID = '1337091214519832698'; // Replace with your Discord channel ID
+const LAST_POSTED_FILE = 'lastPosted.json'
 
 // Example RSS Feeds (Replace with your target sources)
 const NEWS_SOURCES = [
