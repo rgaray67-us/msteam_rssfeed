@@ -14,17 +14,42 @@ const NEWS_SOURCES = [
     { name: "Reuters US", url: "https://rss.app/feeds/RNwqhTijydUYMOZB.xml" }
 ];
 
-// Function to fetch news articles
+// Load last posted articles from file (Persistent tracking)
+let lastPostedArticle = {};
+if (fs.existsSync(LAST_POSTED_FILE)) {
+    try {
+        lastPostedArticle = JSON.parse(fs.readFileSync(LAST_POSTED_FILE, 'utf8'));
+    } catch (error) {
+        console.error("Error reading last posted file:", error);
+        lastPostedArticle = {}; // Reset if file is corrupt
+    }
+}
+
+// Function to fetch and post news
 async function fetchNews() {
     try {
         for (const source of NEWS_SOURCES) {
             const feed = await parser.parseURL(source.url);
             if (feed.items.length > 0) {
                 const latestArticle = feed.items[0]; // Get the latest article
-                const message = `📰 **${latestArticle.title}**\n${latestArticle.link}\n_${latestArticle.contentSnippet}_`;
 
+                // Check if this article has already been posted
+                if (lastPostedArticle[source.name] === latestArticle.title) {
+                    console.log(`Skipping duplicate article from ${source.name}`);
+                    continue; // Skip if it's the same article
+                }
+
+                // Update last posted article and save to file
+                lastPostedArticle[source.name] = latestArticle.title;
+                fs.writeFileSync(LAST_POSTED_FILE, JSON.stringify(lastPostedArticle));
+
+                // Create the message
+                const message = `📰 **${latestArticle.title}**\n${latestArticle.link}\n_${latestArticle.contentSnippet || "No summary available"}_`;
+
+                // Fetch channel and send the message
                 const channel = await client.channels.fetch(NEWS_CHANNEL_ID);
                 await channel.send(message);
+                console.log(`Posted new article from ${source.name}: ${latestArticle.title}`);
             }
         }
     } catch (error) {
@@ -32,13 +57,13 @@ async function fetchNews() {
     }
 }
 
-// Schedule to run every 30 minutes
-cron.schedule('*/30 * * * *', () => {
+// Schedule to run every 5 minutes
+cron.schedule('*/5 * * * *', () => {
     console.log("Fetching news...");
     fetchNews();
 });
 
-// Login to Discord
+// Login to Discord and fetch news once on startup
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
     fetchNews(); // Fetch immediately on startup
