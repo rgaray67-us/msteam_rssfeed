@@ -1,3 +1,10 @@
+const express = require('express');
+const app = express();
+
+// Keep Render happy by opening a fake server
+app.get('/', (req, res) => res.send('Bot is running!'));
+app.listen(3000, () => console.log('Web server running (for Render only)'));
+
 const { Client, GatewayIntentBits } = require('discord.js');
 const axios = require('axios');
 const Parser = require('rss-parser');
